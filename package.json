@@ -1,0 +1,27 @@
+{
+  "name": "backend-hawasli",
+  "version": "1.0.0",
+  "description": "backend",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rabah01abellache/backend-hawasli.git"
+  },
+  "author": "abellache rabah ahmed ghanama",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rabah01abellache/backend-hawasli/issues"
+  },
+  "homepage": "https://github.com/rabah01abellache/backend-hawasli#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongodb": "^5.6.0"
+  }
+}
