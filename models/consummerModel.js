@@ -1,8 +1,6 @@
 const { path } = require('express/lib/application');
 const mongoose = require('mongoose');
 const { double } = require('webidl-conversions');
-
-
 const Consummer = mongoose.model("consummer", new mongoose.Schema({
     firstname: {
         type: String,
