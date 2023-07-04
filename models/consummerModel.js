@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const ConsummerModel = mongoose.model(
   "consummer",
   new mongoose.Schema({
-    firstname: {
+    firstName: {
       type: String,
       required: true,
     },
@@ -15,7 +15,7 @@ const ConsummerModel = mongoose.model(
       type: String,
       required: false,
     },
-    lastname: {
+    lastName: {
       type: String,
       required: true,
     },

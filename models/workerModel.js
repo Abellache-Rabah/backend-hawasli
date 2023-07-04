@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const WorkerModel = mongoose.model(
   "worker",
   new mongoose.Schema({
-    firstname: {
+    firstName: {
       type: String,
       required: true,
     },
-    lastname: {
+    lastName: {
       type: String,
       required: true,
     },
