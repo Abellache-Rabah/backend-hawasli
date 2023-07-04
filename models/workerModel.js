@@ -16,11 +16,11 @@ const WorkerModel = mongoose.model(
     },
     provider: {
       type: String,
-      required: true,
+      required: false,
     },
     clientId: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
@@ -28,7 +28,7 @@ const WorkerModel = mongoose.model(
     },
     phone: {
       type: String,
-      required: false,
+      required: true,
     },
     password: {
       type: String,
@@ -42,9 +42,10 @@ const WorkerModel = mongoose.model(
       type: String,
       required: true,
     },
-    baladia: {
+    baladia : {
       type: String,
-      required: true,
+      required: false,
+
     },
     picture: {
       required: false,
