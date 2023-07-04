@@ -1,7 +1,6 @@
 const { path } = require("express/lib/application");
 const mongoose = require("mongoose");
-const Worker = mongoose.model(
-  "user",
+const Worker = mongoose.model("user",
   new mongoose.Schema({
     firstname: {
       type: String,
