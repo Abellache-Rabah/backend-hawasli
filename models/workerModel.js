@@ -72,7 +72,7 @@ const WorkerModel = mongoose.model(
     },
     bio: {
       type: String,
-      required: true,
+      required: false,
     },
     rating: {
       type: Number,
@@ -80,7 +80,7 @@ const WorkerModel = mongoose.model(
     },
     workTime: {
       type: String,
-      required: true,
+      required: false,
     },
     photos: {
       type: [String],

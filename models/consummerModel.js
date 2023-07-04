@@ -9,11 +9,11 @@ const ConsummerModel = mongoose.model(
     },
     provider: {
       type: String,
-      required: true,
+      required: false,
     },
     clientId: {
       type: String,
-      required: true,
+      required: false,
     },
     lastname: {
       type: String,
@@ -21,7 +21,7 @@ const ConsummerModel = mongoose.model(
     },
     sex: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
@@ -37,15 +37,15 @@ const ConsummerModel = mongoose.model(
     },
     age: {
       type: Number,
-      required: true,
+      required: false,
     },
     wilaya: {
       type: String,
-      required: true,
+      required: false,
     },
     baladia: {
       type: String,
-      required: true,
+      required: false,
     },
     picture: {
       required: false,
