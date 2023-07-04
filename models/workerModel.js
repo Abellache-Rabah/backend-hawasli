@@ -1,6 +1,9 @@
 const { path } = require("express/lib/application");
 const mongoose = require("mongoose");
-const Worker = mongoose.model("user",
+const { double } = require("webidl-conversions");
+
+const WorkerModel = mongoose.model(
+  "worker",
   new mongoose.Schema({
     firstname: {
       type: String,
@@ -12,6 +15,14 @@ const Worker = mongoose.model("user",
       required: true,
     },
     sex: {
+      type: String,
+      required: true,
+    },
+    provider: {
+      type: String,
+      required: true,
+    },
+    clientId: {
       type: String,
       required: true,
     },
@@ -41,12 +52,45 @@ const Worker = mongoose.model("user",
     },
     picture: {
       required: false,
-      type: path,
+      type: String,
     },
     comments: {
       type: [String],
       required: false,
     },
+    latitude: {
+      type: double,
+      required: false,
+    },
+    longitude: {
+      type: double,
+      required: false,
+    },
+    cratedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    work: {
+      type: String,
+      required: true,
+    },
+    bio: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      default: 0,
+    },
+    workTime: {
+      type: String,
+      required: true,
+    },
+    photos: {
+      type: [String],
+      required: false,
+    },
   })
 );
-module.exports = { Worker };
+
+module.exports = { WorkerModel };
