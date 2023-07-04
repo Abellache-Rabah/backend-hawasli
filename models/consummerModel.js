@@ -36,7 +36,7 @@ const ConsummerModel = mongoose.model(
       required: true,
     },
     age: {
-      type: int,
+      type: Number,
       required: true,
     },
     wilaya: {

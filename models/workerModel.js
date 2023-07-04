@@ -1,7 +1,4 @@
-const { path } = require("express/lib/application");
 const mongoose = require("mongoose");
-const { double } = require("webidl-conversions");
-
 const WorkerModel = mongoose.model(
   "worker",
   new mongoose.Schema({
@@ -9,7 +6,6 @@ const WorkerModel = mongoose.model(
       type: String,
       required: true,
     },
-
     lastname: {
       type: String,
       required: true,
@@ -39,7 +35,7 @@ const WorkerModel = mongoose.model(
       required: true,
     },
     age: {
-      type: int,
+      type: Number,
       required: true,
     },
     wilaya: {
@@ -59,11 +55,11 @@ const WorkerModel = mongoose.model(
       required: false,
     },
     latitude: {
-      type: double,
+      type: String,
       required: false,
     },
     longitude: {
-      type: double,
+      type: String,
       required: false,
     },
     cratedAt: {
