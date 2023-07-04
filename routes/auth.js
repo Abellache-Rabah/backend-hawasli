@@ -4,6 +4,7 @@ const { WorkerModel } = require("../models/workerModel");
 const { ConsummerModel } = require("../models/consummerModel");
 const { TokenModel } = require("../models/tokenModels");
 const bcrypt = require("bcrypt");
+const { jwtverify } = require("../middlewares/jwt");
 
 const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
@@ -66,6 +67,15 @@ Roater.post("/register", async (req, res) => {
   });
   await newToken.save();
   res.status(200).json({ token });
+});
+
+Roater.get("/logout", jwtverify, async (req, res) => {
+  const authHead = req.headers?.authorization;
+  const token = authHead?.split(" ")[1];
+  await TokenModel.findOneAndDelete({
+    token,
+  });
+  res.status(200).json({ message: "logout success" });
 });
 
 module.exports = Roater;
