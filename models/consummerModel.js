@@ -2,7 +2,7 @@ const { path } = require('express/lib/application');
 const mongoose = require('mongoose');
 
 
-const User = mongoose.model("user", new mongoose.Schema({
+const Consummer = mongoose.model("consummer", new mongoose.Schema({
     firstname: {
         type: String,
         required: true
@@ -49,7 +49,7 @@ const User = mongoose.model("user", new mongoose.Schema({
         required: false
     }
 }))
+module.exports={}
 
 
-
-module.exports = {User}
+module.exports = {Consummer}
