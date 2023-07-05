@@ -92,6 +92,7 @@ Roater.post("/registerWorker", async (req, res) => {
     phone,
     age,
     wilaya,
+    baladia,
   });
   await newWorker.save();
   const token = createAccessToken(email);

@@ -44,7 +44,7 @@ const WorkerModel = mongoose.model(
     },
     baladia : {
       type: String,
-      required: false,
+      required: true,
 
     },
     picture: {
