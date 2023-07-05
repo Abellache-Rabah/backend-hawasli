@@ -1,7 +1,7 @@
 const Router = require("express").Router();
 const multer = require("multer");
 const path = require("path");
-const { jwtverify } = require("../middlewares/jwt");
+const { jwtverify, isWorker } = require("../middlewares/jwt");
 const { WorkerModel } = require("../models/workerModel");
 const { ConsummerModel } = require("../models/consummerModel");
 const fs = require("fs");
@@ -18,16 +18,14 @@ const storage = multer.diskStorage({
   filename: async (req, file, cb) => {
     const email = req?.email;
     const worker = await WorkerModel.findOne({ email });
-    const consummer = await ConsummerModel.findOne({ email });
-    const nameFile = `profile${path.extname(file.originalname)}`;
-    if (worker && !worker.picture) {
-      worker.picture = nameFile;
+    const nameFile = `${Date.now()}${path.extname(file.originalname)}`;
+    if (worker && worker.photos.length < 5) {
+      worker.photos.push(nameFile);
       await worker.save();
-    } else if (consummer && !consummer.picture) {
-      consummer.picture = nameFile;
-      await consummer.save();
+      return cb(null, nameFile);
+    } else {
+      return cb("you ritchd the limited");
     }
-    return cb(null, nameFile);
   },
 });
 
@@ -45,11 +43,26 @@ const upload = multer({
   limits: {
     fileSize: 10000000,
   },
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      const err = new Error("Only .png, .jpg and .jpeg format allowed!");
+      err.name = "ExtensionError";
+      return cb(err);
+    }
+  },
 });
 
 Router.post(
-  "/uploadProfile",
+  "/uploadPicture",
   jwtverify,
+  isWorker,
   upload.single("profile"),
   (req, res) => {
     res.json({

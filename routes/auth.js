@@ -71,10 +71,6 @@ Roater.post("/register", async (req, res) => {
 
 
 Roater.post("/registerWorker", async (req, res) => {
-
-  console.log(req.body.baladia);
-
-
   const { email, password, firstName, lastName ,sex,work,phone,age,wilaya,baladia} = req.body;
   if (!firstName || !lastName || !email || !password || !baladia || !sex || !work || !phone ||  !age || !wilaya )
     return res.status(401).send({ message: "error all fields should be present " });
