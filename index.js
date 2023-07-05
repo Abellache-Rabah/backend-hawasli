@@ -3,6 +3,7 @@ const { connect} = require('./config/db');
 const Roater = require("./routes/auth")
 const ProfileRouter = require("./routes/uploads");
 const PicturesRouter= require("./routes/uploadsPictures");
+const DownloadRouter = require("./routes/downloadsPictures");
 const bodyParser=require("body-parser")
 const app = express();
 const port = 3000;
@@ -14,6 +15,7 @@ app.use("/auth", Roater);
 app.use("/uploads", ProfileRouter);
 app.use("/uploads", PicturesRouter);
 app.use('/profile', express.static('uploads/profile'));
+app.use("/download",DownloadRouter);
 
 
 
