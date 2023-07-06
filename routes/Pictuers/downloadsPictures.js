@@ -1,4 +1,4 @@
-const { WorkerModel } = require('../models/workerModel');
+const { WorkerModel } = require('../../models/workerModel');
 const path = require('path');
 
 const router = require('express').Router();

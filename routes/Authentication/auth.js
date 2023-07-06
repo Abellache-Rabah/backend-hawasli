@@ -1,10 +1,10 @@
 const Roater = require("express").Router();
 const jwt = require("jsonwebtoken");
-const { WorkerModel } = require("../models/workerModel");
-const { ConsummerModel } = require("../models/consummerModel");
-const { TokenModel } = require("../models/tokenModels");
+const { WorkerModel } = require("../../models/workerModel");
+const { ConsummerModel } = require("../../models/consummerModel");
+const { TokenModel } = require("../../models/tokenModels");
 const bcrypt = require("bcrypt");
-const { jwtverify } = require("../middlewares/jwt");
+const { jwtverify, isConsummer } = require("../../middlewares/jwt");
 
 const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
@@ -69,12 +69,50 @@ Roater.post("/register", async (req, res) => {
   res.status(200).json({ token });
 });
 
+Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
+  const { sex, work, phone, age, wilaya, baladia, latitude, longitude } = req.body;
+  if (
+    !baladia ||
+    !sex ||
+    !work ||
+    !phone ||
+    !age ||
+    !wilaya ||
+    !latitude || 
+    !longitude
+  )
+    return res
+      .status(401)
+      .send({ message: "error all fields should be present " });
+  const email = req?.email;
+  const consummer = ConsummerModel.findOne({ email });
+  if (!consummer) {
+    return res.status(401).send({ message: "user does not exist" });
+  } else {
+    const worker = await WorkerModel.findOne({ email });
+    if (worker) {
+      return res.status(401).send({ message: "you are allready a worker" });
+    } else {
+      
 
-Roater.post("/registerWorker", async (req, res) => {
-  const { email, password, firstName, lastName ,sex,work,phone,age,wilaya,baladia} = req.body;
-  if (!firstName || !lastName || !email || !password || !baladia || !sex || !work || !phone ||  !age || !wilaya )
-    return res.status(401).send({ message: "error all fields should be present " });
+    }
+  }
 
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !password ||
+    !baladia ||
+    !sex ||
+    !work ||
+    !phone ||
+    !age ||
+    !wilaya
+  )
+    return res
+      .status(401)
+      .send({ message: "error all fields should be present " });
   const worker = await WorkerModel.findOne({ email });
   if (worker) return res.status(401).send({ message: "user already exist" });
   const hashPwd = await hashPassword(password);
@@ -99,8 +137,6 @@ Roater.post("/registerWorker", async (req, res) => {
   await newToken.save();
   res.status(200).json({ token });
 });
-
-
 
 Roater.get("/logout", jwtverify, async (req, res) => {
   const authHead = req.headers?.authorization;

@@ -1,9 +1,9 @@
 const express = require("express");
 const { connect} = require('./config/db');
-const Roater = require("./routes/auth")
-const ProfileRouter = require("./routes/uploads");
-const PicturesRouter= require("./routes/uploadsPictures");
-const DownloadRouter = require("./routes/downloadsPictures");
+const Roater = require("./routes/Authentication/auth")
+const ProfileRouter = require("./routes/Pictuers/uploads");
+const PicturesRouter= require("./routes/Pictuers/uploadsPictures");
+const DownloadRouter = require("./routes/Pictuers/downloadsPictures");
 const bodyParser=require("body-parser")
 const app = express();
 const port = 3000;
