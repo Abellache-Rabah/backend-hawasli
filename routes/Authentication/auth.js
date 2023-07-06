@@ -84,7 +84,7 @@ Roater.post("/register", async (req, res) => {
 
 Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
   const { sex, work, phone, age, wilaya, baladia, latitude, longitude } = req.body;
-
+  const email = req?.email;
   if (
     !baladia ||
     !sex ||
