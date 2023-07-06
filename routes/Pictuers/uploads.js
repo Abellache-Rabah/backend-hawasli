@@ -55,7 +55,6 @@ Router.post(
     res.json({
       status: 200,
       message: "Profile Uploaded Successfully",
-      url: `http://localhost:3000/uploads/profile/${req.file.filename}`,
     });
   }
 );
