@@ -87,32 +87,6 @@ transporter.sendMail(mailConfigurations, function(error, info){
 
 Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
   const { sex, work, phone, age, wilaya, baladia, latitude, longitude } = req.body;
-  if (
-    !baladia ||
-    !sex ||
-    !work ||
-    !phone ||
-    !age ||
-    !wilaya ||
-    !latitude || 
-    !longitude
-  )
-    return res
-      .status(401)
-      .send({ message: "error all fields should be present " });
-  const email = req?.email;
-  const consummer = ConsummerModel.findOne({ email });
-  if (!consummer) {
-    return res.status(401).send({ message: "user does not exist" });
-  } else {
-    const worker = await WorkerModel.findOne({ email });
-    if (worker) {
-      return res.status(401).send({ message: "you are allready a worker" });
-    } else {
-      
-
-    }
-  }
 
   if (
     !firstName ||
