@@ -55,6 +55,7 @@ const ConsummerModel = mongoose.model(
       type: [String],
       required: false,
     },
+    
   })
 );
 module.exports = { ConsummerModel };

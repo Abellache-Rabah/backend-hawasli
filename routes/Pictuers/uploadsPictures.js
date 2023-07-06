@@ -1,9 +1,9 @@
 const Router = require("express").Router();
 const multer = require("multer");
 const path = require("path");
-const { jwtverify, isWorker } = require("../middlewares/jwt");
-const { WorkerModel } = require("../models/workerModel");
-const { ConsummerModel } = require("../models/consummerModel");
+const { jwtverify, isWorker } = require("../../middlewares/jwt");
+const { WorkerModel } = require("../../models/workerModel");
+const { ConsummerModel } = require("../../models/consummerModel");
 const fs = require("fs");
 const storage = multer.diskStorage({
   destination: async function (req, file, cb) {

@@ -5,20 +5,17 @@ const { ConsummerModel } = require("../../models/consummerModel");
 const { TokenModel } = require("../../models/tokenModels");
 const bcrypt = require("bcrypt");
 const { jwtverify, isConsummer } = require("../../middlewares/jwt");
+const {hashPassword, comparePassword} = require("../../utils/password")
 
-const hashPassword = async (password) => {
-  const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(password, salt);
-  return hash;
-};
 
-const comparePassword = async (password, hash) => {
-  return await bcrypt.compare(password, hash);
-};
+
+
+
 
 const createAccessToken = (email) => {
   return jwt.sign({ email }, process.env.K);
 };
+
 Roater.post("/login", async (req, res) => {
   if (!req.body?.email || !req.body?.password)
     return res.status(401).send({ message: "error authent" });
@@ -52,21 +49,33 @@ Roater.post("/register", async (req, res) => {
 
   const consummer = await ConsummerModel.findOne({ email });
   if (consummer) return res.status(401).send({ message: "user already exist" });
-  const hashPwd = await hashPassword(password);
-  const newConsummer = new ConsummerModel({
-    firstName,
-    lastName,
-    email,
-    password: hashPwd,
-  });
-  await newConsummer.save();
-  const token = createAccessToken(email);
-  const newToken = new TokenModel({
-    userId: newConsummer?._id,
-    token,
-  });
-  await newToken.save();
-  res.status(200).json({ token });
+
+const user = req.body;
+  const verfyToken = jwt.sign({
+    user ,
+}, process.env.K, { expiresIn: '10m' }  
+);    
+
+  const mailConfigurations = {
+    // It should be a string of sender/server email
+    from: process.env.USER,
+    to: email,
+    // Subject of Email
+    subject: 'Email Verification',
+    // This would be the text of email body
+    text: `Hi! There, You have recently visited 
+           our website and entered your email.
+           Please follow the given link to verify your email
+           http://localhost:3000/verify/${verfyToken} 
+           Thanks`    
+};
+transporter.sendMail(mailConfigurations, function(error, info){
+    if (error) throw Error(error);
+    res.status(200).send('Email Sent Successfully');
+    console.log(info);
+});
+
+  
 });
 
 Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
