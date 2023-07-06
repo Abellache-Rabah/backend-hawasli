@@ -6,7 +6,15 @@ const { TokenModel } = require("../../models/tokenModels");
 const bcrypt = require("bcrypt");
 const { jwtverify, isConsummer } = require("../../middlewares/jwt");
 const {hashPassword, comparePassword} = require("../../utils/password")
-const nodemailer = require('nodemailer');
+
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: process.env.USER,
+      pass: process.env.PASS
+  }
+});
 
 
 
