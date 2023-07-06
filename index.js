@@ -18,7 +18,7 @@ app.use("/uploads", ProfileRouter);
 app.use("/uploads", PicturesRouter);
 app.use('/profile', express.static('uploads/profile'));
 app.use("/download",DownloadRouter);
-app.use('/verify', verficationRoute);
+app.use('/verifynodemailer', verficationRoute);
 
 
 
