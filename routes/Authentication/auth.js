@@ -8,7 +8,13 @@ const { jwtverify, isConsummer } = require("../../middlewares/jwt");
 const {hashPassword, comparePassword} = require("../../utils/password")
 
 
-
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: process.env.USER,
+      pass: process.env.PASS
+  }
+});
 
 
 
