@@ -73,7 +73,7 @@ const transporter = nodemailer.createTransport({
     text: `Hi! There, You have recently visited 
            our website and entered your email.
            Please follow the given link to verify your email
-           https://hawasli.onrender.com/verify/${verfyToken} 
+           ${process.env.SERVERURL}/verify/${verfyToken} 
            Thanks`    
 };
 transporter.sendMail(mailConfigurations, function(error, info){
