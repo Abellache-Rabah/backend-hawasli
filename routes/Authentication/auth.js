@@ -6,9 +6,7 @@ const { TokenModel } = require("../../models/tokenModels");
 const bcrypt = require("bcrypt");
 const { jwtverify, isConsummer } = require("../../middlewares/jwt");
 const {hashPassword, comparePassword} = require("../../utils/password")
-
-
-
+const nodemailer = require('nodemailer');
 
 
 
@@ -28,9 +26,10 @@ Roater.post("/login", async (req, res) => {
   const consummer = await ConsummerModel.findOne({
     email,
   });
+  if(!worker&&!consummer) return res.status(401).send("email dont exsist!")
   const isAuth = comparePassword(
     password,
-    worker.password || consummer.password
+    worker?.password || consummer?.password
   );
   if (!isAuth) return res.status(401).send({ message: "user does not exist" });
   const newtoken = new TokenModel({
@@ -55,7 +54,13 @@ const user = req.body;
     user ,
 }, process.env.K, { expiresIn: '10m' }  
 );    
-
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: process.env.USER,
+      pass: process.env.PASS
+  }
+});
   const mailConfigurations = {
     // It should be a string of sender/server email
     from: process.env.USER,
