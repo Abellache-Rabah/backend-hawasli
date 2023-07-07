@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const { jwtverify, isConsummer } = require("../../middlewares/jwt");
 const { hashPassword, comparePassword } = require("../../utils/password");
 const nodemailer = require("nodemailer");
+const { consumers } = require("nodemailer/lib/xoauth2");
 
 const createAccessToken = (email) => {
   return jwt.sign({ email }, process.env.K);
@@ -98,21 +99,22 @@ Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
       .send({ message: "error all fields should be present " });
   const worker = await WorkerModel.findOne({ email });
   if (worker) return res.status(401).send({ message: "user already exist" });
-  const consummer = ConsummerModel.findOneAndDelete({ email });
-  console.log(consummer);
+  const consummer = await ConsummerModel.findOne({ email });
   const body = req.body
   delete body.latitude 
   delete body.longitude
   console.log(body);
-
-
   const newWorker = new WorkerModel({
-    ...consummer,
     ...body,
+    email : consummer.email,
+    password : consummer.password,
+    firstName : consummer.firstName,
+    lastName : consummer.lastName,
     "location.type":"Point",
     "location.coordinates":[latitude,longitude],
   });
   await newWorker.save();
+  await consummer.deleteOne()
   const token = createAccessToken(email);
   const newToken = new TokenModel({
     userId: newWorker?._id,

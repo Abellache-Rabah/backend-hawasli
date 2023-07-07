@@ -27,7 +27,7 @@ find.post("/",async (req, res) => {
       $near: {
         $geometry: {
           type: 'Point',
-          coordinates: [longitude, latitude]
+          coordinates: [latitude, longitude]
         },
         $maxDistance: maxDistance * 1000 // convert km to meters
       }
