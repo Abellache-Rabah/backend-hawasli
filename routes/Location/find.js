@@ -5,8 +5,8 @@ const { WorkerModel } = require("../../models/workerModel");
 
 
 
-find.get("/find",async (req, res) => {
-  const { longitude, latitude , maxDistance  } = req.body;
+find.post("/",async (req, res) => {
+  let { longitude, latitude , maxDistance  } = req.body;
   if (!longitude || !latitude || !maxDistance) {
     return res.status(400).json({
       error: "Please provide all the required fields"

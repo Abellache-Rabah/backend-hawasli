@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const WorkerModel = mongoose.model(
-  "worker",
-  new mongoose.Schema({
+const workerSchema = new mongoose.Schema({
     firstName: {
       type: String,
       required: true,
@@ -55,14 +53,6 @@ const WorkerModel = mongoose.model(
       type: [String],
       required: false,
     },
-    latitude: {
-      type: String,
-      required: false,
-    },
-    longitude: {
-      type: String,
-      required: false,
-    },
     cratedAt: {
       type: Date,
       default: Date.now,
@@ -99,6 +89,11 @@ const WorkerModel = mongoose.model(
       }
     },
   })
-);
-WorkerModel.index({ location: '2dsphere' });
+
+
+
+
+
+workerSchema.index({ location: '2dsphere' });
+const WorkerModel = mongoose.model("worker", workerSchema);
 module.exports = { WorkerModel };
