@@ -98,10 +98,19 @@ Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
       .send({ message: "error all fields should be present " });
   const worker = await WorkerModel.findOne({ email });
   if (worker) return res.status(401).send({ message: "user already exist" });
-  const consummer = ConsummerModel.findOneAndDelete({ email }, { new: true });
+  const consummer = ConsummerModel.findOneAndDelete({ email });
+  console.log(consummer);
+  const body = req.body
+  delete body.latitude 
+  delete body.longitude
+  console.log(body);
+
+
   const newWorker = new WorkerModel({
     ...consummer,
-    ...req.body,
+    ...body,
+    "location.type":"Point",
+    "location.coordinates":[latitude,longitude],
   });
   await newWorker.save();
   const token = createAccessToken(email);
@@ -111,6 +120,7 @@ Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
   });
   await newToken.save();
   res.status(200).json({ token });
+  
 });
 
 Roater.get("/logout", jwtverify, async (req, res) => {
