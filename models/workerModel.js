@@ -87,7 +87,18 @@ const WorkerModel = mongoose.model(
       type: [String],
       required: false,
     },
+    location: {
+      type: {
+        type: String, // Don't do `{ location: { type: String } }`
+        enum: ['Point'], // 'location.type' must be 'Point'
+        required: false
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: false
+      }
+    },
   })
 );
-
+WorkerModel.index({ location: '2dsphere' });
 module.exports = { WorkerModel };
