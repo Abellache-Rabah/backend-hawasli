@@ -5,10 +5,8 @@ const { ConsummerModel } = require("../../models/consummerModel");
 const { TokenModel } = require("../../models/tokenModels");
 const bcrypt = require("bcrypt");
 const { jwtverify, isConsummer } = require("../../middlewares/jwt");
-const {hashPassword, comparePassword} = require("../../utils/password")
-const nodemailer = require('nodemailer');
-
-
+const { hashPassword, comparePassword } = require("../../utils/password");
+const nodemailer = require("nodemailer");
 
 const createAccessToken = (email) => {
   return jwt.sign({ email }, process.env.K);
@@ -26,7 +24,7 @@ Roater.post("/login", async (req, res) => {
   const consummer = await ConsummerModel.findOne({
     email,
   });
-  if(!worker&&!consummer) return res.status(401).send("email dont exsist!")
+  if (!worker && !consummer) return res.status(401).send("email dont exsist!");
   const isAuth = comparePassword(
     password,
     worker?.password || consummer?.password
@@ -49,42 +47,44 @@ Roater.post("/register", async (req, res) => {
   const consummer = await ConsummerModel.findOne({ email });
   if (consummer) return res.status(401).send({ message: "user already exist" });
 
-const user = req.body;
-  const verfyToken = jwt.sign({
-    user ,
-}, process.env.K, { expiresIn: '10m' }  
-);    
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
+  const user = req.body;
+  const verfyToken = jwt.sign(
+    {
+      user,
+    },
+    process.env.K,
+    { expiresIn: "10m" }
+  );
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
       user: process.env.USER,
-      pass: process.env.PASS
-  }
-});
+      pass: process.env.PASS,
+    },
+  });
   const mailConfigurations = {
     // It should be a string of sender/server email
     from: process.env.USER,
     to: email,
     // Subject of Email
-    subject: 'Email Verification',
+    subject: "Email Verification",
     // This would be the text of email body
     text: `Hi! There, You have recently visited 
            our website and entered your email.
            Please follow the given link to verify your email
            http://localhost:3000/verify/${verfyToken} 
-           Thanks`    
-};
-transporter.sendMail(mailConfigurations, function(error, info){
+           Thanks`,
+  };
+  transporter.sendMail(mailConfigurations, function (error, info) {
     if (error) throw Error(error);
-    res.status(200).send('Email Sent Successfully');
+    res.status(200).send("Email Sent Successfully");
     console.log(info);
-});
-
-  
+  });
 });
 
 Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
-  const { sex, work, phone, age, wilaya, baladia, latitude, longitude } = req.body;
+  const { sex, work, phone, age, wilaya, baladia, latitude, longitude } =
+    req.body;
   if (
     !baladia ||
     !sex ||
@@ -92,7 +92,7 @@ Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
     !phone ||
     !age ||
     !wilaya ||
-    !latitude || 
+    !latitude ||
     !longitude
   )
     return res
@@ -107,8 +107,6 @@ Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
     if (worker) {
       return res.status(401).send({ message: "you are allready a worker" });
     } else {
-      
-
     }
   }
 
