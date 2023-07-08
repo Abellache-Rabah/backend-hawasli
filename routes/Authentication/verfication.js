@@ -1,6 +1,6 @@
 const verficationRoute = require("express").Router();
 const jwt = require("jsonwebtoken");
-const {hashPassword, comparePassword} = require("../../utils/password")
+const {hashPassword} = require("../../utils/password")
 const { ConsummerModel } = require("../../models/consummerModel");
 const { TokenModel } = require("../../models/tokenModels");
 

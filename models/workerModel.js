@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const WorkerModel = mongoose.model(
-  "worker",
-  new mongoose.Schema({
+const workerSchema = new mongoose.Schema({
     firstName: {
       type: String,
       required: true,
@@ -51,18 +49,7 @@ const WorkerModel = mongoose.model(
       required: false,
       type: String,
     },
-    comments: {
-      type: [String],
-      required: false,
-    },
-    latitude: {
-      type: String,
-      required: false,
-    },
-    longitude: {
-      type: String,
-      required: false,
-    },
+
     cratedAt: {
       type: Date,
       default: Date.now,
@@ -87,7 +74,24 @@ const WorkerModel = mongoose.model(
       type: [String],
       required: false,
     },
+    location: {
+      type: {
+        type: String, // Don't do `{ location: { type: String } }`
+        enum: ['Point'], // 'location.type' must be 'Point'
+        required: false
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: false
+      }
+    },
+    
   })
-);
 
+
+
+
+
+workerSchema.index({ location: '2dsphere' });
+const WorkerModel = mongoose.model("worker", workerSchema);
 module.exports = { WorkerModel };

@@ -8,7 +8,7 @@ router.get("/pictures/:id", async (req,res)=>{
     if (worker) {
         const photos = worker.photos ;
     const urls = photos.map(photo => {
-        return "http://localhost:3000/download/picture/" + userId + "/" + photo
+        return   `${process.env.SERVERURL}/download/picture/`+ userId + "/" + photo
     } )
 
         res.status(200).json({urls});
