@@ -49,10 +49,7 @@ const workerSchema = new mongoose.Schema({
       required: false,
       type: String,
     },
-    comments: {
-      type: [String],
-      required: false,
-    },
+
     cratedAt: {
       type: Date,
       default: Date.now,
@@ -88,6 +85,7 @@ const workerSchema = new mongoose.Schema({
         required: false
       }
     },
+    
   })
 
 

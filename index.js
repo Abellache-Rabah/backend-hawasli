@@ -7,7 +7,8 @@ const PicturesRouter= require("./routes/Pictuers/uploadsPictures");
 const DownloadRouter = require("./routes/Pictuers/downloadsPictures");
 const verficationRoute = require("./routes/Authentication/verfication");
 const find = require("./routes/Location/find");
-const bodyParser=require("body-parser")
+const bodyParser=require("body-parser");
+const comment = require('./routes/comments/comment');
 const app = express();
 const port = 3000;
 
@@ -21,7 +22,7 @@ app.use('/profile', express.static('uploads/profile'));
 app.use("/download",DownloadRouter);
 app.use('/verify', verficationRoute);
 app.use("/find",find);
-
+app.use("/comments" , comment)
 
 
 connect().then(() => {
