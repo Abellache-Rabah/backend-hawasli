@@ -4,8 +4,11 @@ const { Comment } = require("../../models/commentModel");
 const { jwtverify } = require("../../middlewares/jwt");
 const { WorkerModel } = require("../../models/workerModel");
 const { ConsummerModel } = require("../../models/consummerModel");
+const { CommentSchema } = require("../../utils/validation/joi");
 
 comment.post("/", jwtverify, async (req, res) => {
+  const { error } = CommentSchema.validate(req.body);
+  if (error) return res.status(400).send(error);
   const { content, rating, idWorker } = req.body;
   const userComment = req?.email;
   const userWhoCommented = await ConsummerModel.find({ email: userComment });
@@ -13,7 +16,7 @@ comment.post("/", jwtverify, async (req, res) => {
     return res.status(400).json({ message: "Something went wrong" });
   }
 
-  if (!content || !rating || !idWorker ) {
+  if (!content || !rating || !idWorker) {
     return res.status(400).json({ message: "Please fill all the fields" });
   }
   const workers = await WorkerModel.findById(idWorker);

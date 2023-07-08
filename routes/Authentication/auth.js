@@ -8,14 +8,19 @@ const { jwtverify, isConsummer } = require("../../middlewares/jwt");
 const { hashPassword, comparePassword } = require("../../utils/password");
 const nodemailer = require("nodemailer");
 const { consumers } = require("nodemailer/lib/xoauth2");
+const {
+  loginSchema,
+  ConsummerSchema,
+  WorkerSchema,
+} = require("../../utils/validation/joi");
 
 const createAccessToken = (email) => {
   return jwt.sign({ email }, process.env.K);
 };
 
 Roater.post("/login", async (req, res) => {
-  if (!req.body?.email || !req.body?.password)
-    return res.status(401).send({ message: "error authent" });
+  const { error } = loginSchema.validate(req.body);
+  if (error) return res.status(400).send(error);
   const { email, password } = req.body;
   const token = createAccessToken(email);
 
@@ -41,13 +46,11 @@ Roater.post("/login", async (req, res) => {
 });
 
 Roater.post("/register", async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
-  if (!firstName || !lastName || !email || !password)
-    return res.status(401).send({ message: "error authent" });
-
+  const { error } = ConsummerSchema.validate(req.body);
+  if (error) return res.status(400).send(error);
+  const { email } = req.body;
   const consummer = await ConsummerModel.findOne({ email });
   if (consummer) return res.status(401).send({ message: "user already exist" });
-
   const user = req.body;
   const verfyToken = jwt.sign(
     {
@@ -84,37 +87,29 @@ Roater.post("/register", async (req, res) => {
 });
 
 Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
-  const { sex, work, phone, age, wilaya, baladia, latitude, longitude } = req.body;
+  const { error } = WorkerSchema.validate(req.body);
+  if (error) return res.status(400).send(error);
+  const { latitude, longitude } =
+    req.body;
   const email = req?.email;
-  if (
-    !baladia ||
-    !sex ||
-    !work ||
-    !phone ||
-    !age ||
-    !wilaya
-  )
-    return res
-      .status(401)
-      .send({ message: "error all fields should be present " });
   const worker = await WorkerModel.findOne({ email });
   if (worker) return res.status(401).send({ message: "user already exist" });
   const consummer = await ConsummerModel.findOne({ email });
-  const body = req.body
-  delete body.latitude 
-  delete body.longitude
+  const body = req.body;
+  delete body.latitude;
+  delete body.longitude;
   console.log(body);
   const newWorker = new WorkerModel({
     ...body,
-    email : consummer.email,
-    password : consummer.password,
-    firstName : consummer.firstName,
-    lastName : consummer.lastName,
-    "location.type":"Point",
-    "location.coordinates":[latitude,longitude],
+    email: consummer.email,
+    password: consummer.password,
+    firstName: consummer.firstName,
+    lastName: consummer.lastName,
+    "location.type": "Point",
+    "location.coordinates": [latitude, longitude],
   });
   await newWorker.save();
-  await consummer.deleteOne()
+  await consummer.deleteOne();
   const token = createAccessToken(email);
   const newToken = new TokenModel({
     userId: newWorker?._id,
@@ -122,7 +117,6 @@ Roater.post("/upgradeToWorker", jwtverify, isConsummer, async (req, res) => {
   });
   await newToken.save();
   res.status(200).json({ token });
-  
 });
 
 Roater.get("/logout", jwtverify, async (req, res) => {

@@ -3,15 +3,16 @@ const ChatModel = mongoose.model(
   "chat",
   new mongoose.Schema({
     idUser: {
-      type: String,
+      type:  mongoose.Schema.Types.ObjectId,
       required: true,
     },
     idUser2: {
-      type: String,
+      type:  mongoose.Schema.Types.ObjectId,
       required: true,
     },
     msgsIds: {
       type: [String],
+      ref:"msg"
     },
     createAt:{
         type: Date,

@@ -9,6 +9,7 @@ const verficationRoute = require("./routes/Authentication/verfication");
 const find = require("./routes/Location/find");
 const bodyParser=require("body-parser");
 const comment = require('./routes/comments/comment');
+const { ChatRouter } = require('./routes/chat/chat');
 const app = express();
 const port = 3000;
 
@@ -23,7 +24,7 @@ app.use("/download",DownloadRouter);
 app.use('/verify', verficationRoute);
 app.use("/find",find);
 app.use("/comments" , comment)
-
+app.use("/message",ChatRouter)
 
 connect().then(() => {
     app.listen(port, () => {
