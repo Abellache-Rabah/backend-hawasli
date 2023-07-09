@@ -9,8 +9,8 @@ const WorkerSchema = Joi.object({
   work: Joi.string().required(),
   bio: Joi.string().optional(),
   workTime: Joi.string().optional(),
-  latitude:Joi.string().required(),
-  longitude:Joi.string().required(),
+  latitude: Joi.string().required(),
+  longitude: Joi.string().required(),
 });
 
 const ConsummerSchema = Joi.object({
@@ -41,10 +41,19 @@ const PaymentSchema = Joi.object({
   ccp: Joi.string().required(),
 });
 
+const sendSchema = Joi.object({
+  idUser: Joi.string()
+    .regex(/^[0-9a-fA-F]{24}$/)
+    .message("must be an oid")
+    .required(),
+  msg: Joi.string().required(),
+});
+
 module.exports = {
   PaymentSchema,
   WorkerSchema,
   CommentSchema,
   ConsummerSchema,
-  loginSchema
+  loginSchema,
+  sendSchema,
 };

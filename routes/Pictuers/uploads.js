@@ -4,59 +4,20 @@ const path = require("path");
 const { jwtverify } = require("../../middlewares/jwt");
 const { WorkerModel } = require("../../models/workerModel");
 const { ConsummerModel } = require("../../models/consummerModel");
-const fs = require("fs");
-const storage = multer.diskStorage({
-  destination: async function (req, file, cb) {
-    const email = req?.email;
-    const worker = await WorkerModel.findOne({ email });
-    const consummer = await ConsummerModel.findOne({ email });
-    const id = consummer?._id || worker?._id;
-    let path = `uploads/pictures/${id}`;
-    fs.mkdirSync(path, { recursive: true });
-    cb(null, path);
-  },
-  filename: async (req, file, cb) => {
-    const email = req?.email;
-    const worker = await WorkerModel.findOne({ email });
-    const consummer = await ConsummerModel.findOne({ email });
-    const nameFile = `profile${path.extname(file.originalname)}`;
-    if (worker && !worker.picture) {
-      worker.picture = nameFile;
-      await worker.save();
-    } else if (consummer && !consummer.picture) {
-      consummer.picture = nameFile;
-      await consummer.save();
-    }
-    return cb(null, nameFile);
-  },
+const { uploadDirect } = require("@uploadcare/upload-client");
+const fileUpload = require("express-fileupload");
+Router.use(fileUpload());
+
+Router.post("/profile", jwtverify, async (req, res) => {
+  const fileData = req.files.profile.data;
+
+  const result = await uploadDirect(fileData, {
+    publicKey: process.env.PUBLICKEY,
+    store: "auto",
+  });
+
+  console.log(result);
+  res.send(result);
 });
-
-function errHandler(err, req, res, next) {
-  if (err instanceof multer.MulterError) {
-    res.json({
-      success: 0,
-      message: err.message,
-    });
-  }
-}
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 10000000,
-  },
-});
-
-Router.post(
-  "/uploadProfile",
-  jwtverify,
-  upload.single("profile"),
-  (req, res) => {
-    res.json({
-      status: 200,
-      message: "Profile Uploaded Successfully",
-    });
-  }
-);
 
 module.exports = Router;
