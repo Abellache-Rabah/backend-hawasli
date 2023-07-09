@@ -7,7 +7,8 @@ const { ConsummerModel } = require("../../models/consummerModel");
 const { CommentSchema } = require("../../utils/validation/joi");
 
 comment.post("/", jwtverify, async (req, res) => {
-  const { error } = CommentSchema.validate(req.body);
+  try {
+    const { error } = CommentSchema.validate(req.body);
   if (error) return res.status(400).send(error);
   const { content, rating, idWorker } = req.body;
   const userComment = req?.email;
@@ -43,10 +44,16 @@ comment.post("/", jwtverify, async (req, res) => {
     workers.save();
     return res.status(201).json({ message: "Comment created successfully" });
   }
+  } catch (error) {
+     
+    res.status(500).send(error)
+  }
 });
 
 comment.get("/:id", jwtverify, async (req, res) => {
-  const idWorker = req.params.id;
+  try {
+  const idWorker = req.params?.id;
+  if (idWorker.length != 24) res.status(403).json("id not correct")
   const workers = await WorkerModel.findById(idWorker);
   if (!workers) {
     return res.status(400).json({ message: "Something went wrong" });
@@ -56,6 +63,9 @@ comment.get("/:id", jwtverify, async (req, res) => {
     return res.status(400).json({ message: "Something went wrong" });
   }
   return res.status(200).json({ comments });
+  } catch (error) {
+    res.status(500).json(error)
+  }
 });
 
 module.exports = comment;
