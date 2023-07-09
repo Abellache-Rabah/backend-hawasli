@@ -25,7 +25,7 @@ ChatRouter.post("/getMeg", jwtverify, async (req, res) => {
 
   let chat =
     (await ChatModel.findOne({ idUser: user._id, idUser2: userTo._id })) ||
-   await ChatModel.findOne({ idUser: userTo._id, idUser2: user._id });
+    (await ChatModel.findOne({ idUser: userTo._id, idUser2: user._id }));
   if (!chat) {
     chat = new ChatModel({
       idUser: user,
@@ -33,7 +33,7 @@ ChatRouter.post("/getMeg", jwtverify, async (req, res) => {
     });
     await chat.save();
   }
-  const allMsg =await Promise.all(
+  const allMsg = await Promise.all(
     chat.msgsIds.map(async (e) => await MsgModel.findById(e))
   );
   res.status(200).send(allMsg);
