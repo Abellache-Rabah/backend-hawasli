@@ -6,7 +6,8 @@ const { MsgModel } = require("../../models/msgModel");
 const { WorkerModel } = require("../../models/workerModel");
 
 const ChatRouter = require("express").Router();
-ChatRouter.post("/getMeg", jwtverify, async (req, res) => {
+
+ChatRouter.post("/getMsg", jwtverify, async (req, res) => {
   const { idUser } = req.body;
   if (!idUser) {
     return res.status(404).send("Id user is require");
@@ -25,7 +26,7 @@ ChatRouter.post("/getMeg", jwtverify, async (req, res) => {
 
   let chat =
     (await ChatModel.findOne({ idUser: user._id, idUser2: userTo._id })) ||
-    ChatModel.findOne({ idUser: userTo._id, idUser2: user._id });
+    await ChatModel.findOne({ idUser: userTo._id, idUser2: user._id });
   if (!chat) {
     chat = new ChatModel({
       idUser: user,
@@ -38,6 +39,8 @@ ChatRouter.post("/getMeg", jwtverify, async (req, res) => {
   );
   res.status(200).send(allMsg);
 });
+
+
 ChatRouter.post("/send", jwtverify, async (req, res) => {
   const { idUser, msg } = req.body;
   if (!idUser) {
@@ -72,9 +75,18 @@ ChatRouter.post("/send", jwtverify, async (req, res) => {
   await createMsg.save();
   chat.msgsIds.push(createMsg._id);
   await chat.save();
-  const allMsg =await Promise.all(
-    chat.msgsIds.map(async (e) => await MsgModel.findById(e))
-  );
-  res.status(200).send(allMsg);
+  res.status(200).send(createMsg);
 });
+
+
+
+ChatRouter.get("/getChat", jwtverify, async (req, res) => {
+  const email = req?.email
+  const user =  (await ConsummerModel.findOne({ email })) || (await WorkerModel.findOne({ email }));
+  if (!user)  return res.status(404).send( "user not found" );
+  let chat = (await ChatModel.findOne({ idUser: user._id})) || (await ChatModel.findOne({ idUser2: user._id }));
+  res.status(200).send(chat)
+});
+
+
 module.exports = { ChatRouter };
