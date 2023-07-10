@@ -8,9 +8,11 @@ Router.use(fileupload({ useTempFiles: true }));
 
 Router.post("/profile", jwtverify, async (req, res) => {
   const file = req.files.image;
-  const email = req?.email
+  const email = req?.email;
   try {
-    const user = await WorkerModel.findOne({ email }) || await ConsummerModel.findOne({ email}) ;
+    const user =
+      (await WorkerModel.findOne({ email })) ||
+      (await ConsummerModel.findOne({ email }));
     if (!user) {
       return res.status(400).json({ error: "User not found" });
     }
@@ -20,12 +22,12 @@ Router.post("/profile", jwtverify, async (req, res) => {
       resource_type: "auto",
       folder: `${user._id}`,
       width: 300,
-      crop: "scale"
+      crop: "scale",
     });
     user.picture = result.secure_url;
     await user.save();
     res.json({
-      message : "uploaded seccesfully",
+      message: "uploaded seccesfully",
       url: result.secure_url,
     });
   } catch (err) {
@@ -34,28 +36,56 @@ Router.post("/profile", jwtverify, async (req, res) => {
   }
 });
 
-
-
-
 Router.post("/photo", jwtverify, async (req, res) => {
   const file = req.files.image;
-  const email = req?.email
+  const email = req?.email;
   try {
-    const user = await WorkerModel.findOne({ email }) ;
+    const user = await WorkerModel.findOne({ email });
     if (!user) {
       return res.status(400).json({ error: "User not found" });
     }
     console.log(file);
     const result = await cloudinary.uploader.upload(file.tempFilePath, {
-      public_id: `${Date.now()}_1`,
+      public_id: `${Date.now()}`,
       resource_type: "auto",
       folder: `${user._id}`,
     });
-    user.photos.push(result.secure_url) 
+    user.photos.url.push(result.secure_url);
+    user.photos.name.push(result.public_id);
     await user.save();
     res.json({
-      message : "uploaded seccesfully",
+      message: "uploaded seccesfully",
       url: result.secure_url,
+    });
+  } catch (err) {
+    console.log("Error", err);
+    return res.status(400).json({ error: err });
+  }
+});
+
+Router.post("/deletePhoto", jwtverify, async (req, res) => {
+  const name = req.body.name;
+  const email = req?.email;
+  try {
+    const workers = await WorkerModel.find({
+      email,
+      photos: {
+        name
+      },
+    });
+    if (!workers) {
+      return res
+        .status(400)
+        .json({ error: "User not found or photo dosnt exist" });
+    }
+
+    await cloudinary.uploader.destroy(name, {
+      folder: `${workers._id}`,
+    });
+//TODO : remove from db
+
+    res.json({
+      message: "photo deleted",
     });
   } catch (err) {
     console.log("Error", err);

@@ -71,8 +71,13 @@ const workerSchema = new mongoose.Schema({
       required: false,
     },
     photos: {
-      type: [String],
+      name :{
+        type: [String],
       required: false,
+      },url :{
+        type: [String],
+        required: false,
+      }
     },
     location: {
       type: {
