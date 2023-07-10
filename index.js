@@ -9,6 +9,7 @@ const find = require("./routes/Location/find");
 const bodyParser=require("body-parser");
 const comment = require('./routes/comments/comment');
 const profile = require('./routes/profile/profile');
+const wilaya = require('./routes/wilaya/wilaya');
 const { ChatRouter } = require('./routes/chat/chat');
 const app = express();
 const port = 3000;
@@ -24,7 +25,7 @@ app.use("/find",find);
 app.use("/comments" , comment)
 app.use("/message",ChatRouter)
 app.use("/profile",profile)
-
+app.use("/",wilaya)
 connect().then(() => {
     app.listen(port, () => {
         console.log(`Server listening on port ${port}`);
