@@ -44,7 +44,9 @@ Router.post("/photo", jwtverify, async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: "User not found" });
     }
-    console.log(file);
+    if (user.photos.url.length > 4)  {
+      return res.status(400).send( "you reached the maximum number of photos")
+    }
     const result = await cloudinary.uploader.upload(file.tempFilePath, {
       public_id: `${Date.now()}`,
       resource_type: "auto",
@@ -53,7 +55,7 @@ Router.post("/photo", jwtverify, async (req, res) => {
     user.photos.url.push(result.secure_url);
     user.photos.name.push(result.public_id);
     await user.save();
-    res.json({
+    res.status(200).json({
       message: "uploaded seccesfully",
       url: result.secure_url,
     });
@@ -79,11 +81,8 @@ Router.post("/deletePhoto", jwtverify, async (req, res) => {
       folder: `${workers._id}`,
     });
     //TODO : remove from db
-
     workers.photos.name = workers.photos.name.filter((e) => e != name);
-    workers.photos.url = workers.photos.url.filter(
-      (e) => !e.includes(name)
-    );
+    workers.photos.url = workers.photos.url.filter((e) => !e.includes(name));
     await workers.save();
     res.json({
       message: "photo deleted",

@@ -74,7 +74,8 @@ const workerSchema = new mongoose.Schema({
       name :{
         type: [String],
       required: false,
-      },url :{
+      },
+      url :{
         type: [String],
         required: false,
       }
