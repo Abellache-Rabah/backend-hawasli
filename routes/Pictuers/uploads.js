@@ -67,23 +67,24 @@ Router.post("/deletePhoto", jwtverify, async (req, res) => {
   const name = req.body.name;
   const email = req?.email;
   try {
-    const workers = await WorkerModel.find({
-      email,
-      photos: {
-        name
-      },
-    });
+    const workers = await WorkerModel.findOne({ email });
     if (!workers) {
       return res
         .status(400)
         .json({ error: "User not found or photo dosnt exist" });
     }
+    console.log(workers);
 
     await cloudinary.uploader.destroy(name, {
       folder: `${workers._id}`,
     });
-//TODO : remove from db
+    //TODO : remove from db
 
+    workers.photos.name = workers.photos.name.filter((e) => e != name);
+    workers.photos.url = workers.photos.url.filter(
+      (e) => !e.includes(name)
+    );
+    await workers.save();
     res.json({
       message: "photo deleted",
     });
