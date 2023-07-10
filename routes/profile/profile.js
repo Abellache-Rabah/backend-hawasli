@@ -18,19 +18,19 @@ router.get("/:id", async (req, res) => {
 });
 
 router.delete("/delete", jwtverify, async (req, res) => {
-  const email = req?.email;
-
   try {
+    const email = req?.email;
     const user = await WorkerModel.findOneAndDelete({ email });
     if (!user) {
       return res.status(400).json({ error: "User not found" });
     }
-    await cloudinary.api
-      .delete_folder(`/${user._id}`)
-      .then(await user.delete());
+    console.log(user);
+    await cloudinary.api.delete_resources_by_prefix(`${user._id}/`).catch(console.log(err));
+    
+    await user.save();
     return res.status(200).send("user deleted");
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).send(error);
   }
 });
 
