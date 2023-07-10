@@ -1,31 +1,66 @@
 const Router = require("express").Router();
-const multer = require("multer");
-const path = require("path");
 const { jwtverify } = require("../../middlewares/jwt");
 const { WorkerModel } = require("../../models/workerModel");
 const { ConsummerModel } = require("../../models/consummerModel");
-const { uploadDirect } = require("@uploadcare/upload-client");
-const fileUpload = require("express-fileupload");
-
-const { storage } = require("./fireBase");
-const { doc, updateDoc } = require("firebase/firestore");
-const { ref,getDownloadURL, uploadBytes } = require("firebase/storage");
-Router.use(fileUpload());
-
-async function upload(e) {
-  const file = e;
-  const storageRef = ref(storage, `users/12345678/profile.png`);
-  const result = await uploadBytes(storageRef, file);
-  const url = await getDownloadURL(result.ref);
-  return url;
-  // await updateDoc(doc(db, "users", $user?.uid), { photoURL: url });
-}
+const fileupload = require("express-fileupload");
+const cloudinary = require("../../utils/cloudinary");
+Router.use(fileupload({ useTempFiles: true }));
 
 Router.post("/profile", jwtverify, async (req, res) => {
-  const fileData = req.files.profile.data;
-  const result = await upload(fileData);
-  console.log(result);
-  res.send(result);
+  const file = req.files.image;
+  const email = req?.email
+  try {
+    const user = await WorkerModel.findOne({ email }) || await ConsummerModel.findOne({ email}) ;
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
+    }
+    console.log(file);
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      public_id: "profile",
+      resource_type: "auto",
+      folder: `${user._id}`,
+      width: 300,
+      crop: "scale"
+    });
+    user.picture = result.secure_url;
+    await user.save();
+    res.json({
+      message : "uploaded seccesfully",
+      url: result.secure_url,
+    });
+  } catch (err) {
+    console.log("Error", err);
+    return res.status(400).json({ error: err });
+  }
+});
+
+
+
+
+Router.post("/photo", jwtverify, async (req, res) => {
+  const file = req.files.image;
+  const email = req?.email
+  try {
+    const user = await WorkerModel.findOne({ email }) ;
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
+    }
+    console.log(file);
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      public_id: `${Date.now()}_1`,
+      resource_type: "auto",
+      folder: `${user._id}`,
+    });
+    user.photos.push(result.secure_url) 
+    await user.save();
+    res.json({
+      message : "uploaded seccesfully",
+      url: result.secure_url,
+    });
+  } catch (err) {
+    console.log("Error", err);
+    return res.status(400).json({ error: err });
+  }
 });
 
 module.exports = Router;
