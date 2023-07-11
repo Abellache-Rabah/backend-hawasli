@@ -22,11 +22,10 @@ router.delete("/delete", jwtverify, async (req, res) => {
     const email = req?.email;
     const user = await WorkerModel.findOneAndDelete({ email });
     if (!user) {
-      return res.status(400).json({ error: "User not found" });
+      return res.status(400).send("User not found" );
     }
     console.log(user);
-    await cloudinary.api.delete_resources_by_prefix(`${user._id}/`).catch(console.log(err));
-    
+    await cloudinary.api.delete_resources_by_prefix(`${user._id}/`);
     await user.save();
     return res.status(200).send("user deleted");
   } catch (error) {
