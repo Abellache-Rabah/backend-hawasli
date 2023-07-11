@@ -1,10 +1,11 @@
 const { Comment } = require("../models/commentModel");
 const { WorkerModel } = require("../models/workerModel");
 const cloudinary = require("../utils/cloudinary");
+
 const { UpdateWorkerSchema } = require("../utils/validation/joi");
 
 module.exports.getProfile = async (req, res) => {
-  try {
+    try {
     const { idWorker } = req?.params?.id;
     if (!idWorker) return res.status(400).send("Id worker is require");
     const worker = await WorkerModel.findById(idWorker);
@@ -16,9 +17,13 @@ module.exports.getProfile = async (req, res) => {
   }
 };
 
+
+
+
 module.exports.deleteProfile = async (req, res) => {
+  
   try {
-    const email = req?.email;
+          const email = req?.email;
     const user = await WorkerModel.findOneAndDelete({ email });
     if (!user) {
       return res.status(400).json({ error: "User not found" });
