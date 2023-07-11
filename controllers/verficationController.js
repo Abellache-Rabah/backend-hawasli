@@ -11,7 +11,9 @@ const createAccessToken = (email) => {
 
 module.exports.getVerfaid = (req, res) => {
   const { token } = req.params;
-
+  if (!token) {
+    res.status(401).send("You must provide a token");
+  }
   jwt.verify(token, process.env.K, async (err, decoded) => {
     if (err) {
       console.log(err);
@@ -28,7 +30,6 @@ module.exports.getVerfaid = (req, res) => {
         lastName: user.lastName,
         email : user.email,
         password: hashPwd,
-        
       });
       await newConsummer.save();
       const token = createAccessToken(user.email);

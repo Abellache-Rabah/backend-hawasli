@@ -46,7 +46,7 @@ module.exports.getMsg= async (req, res) => {
 
 module.exports.sendMsg= async (req, res) => {
   try {
-    const {error} = sendSchema.validate()
+    const {error} = sendSchema.validate(req.body)
     if (error) return res.status(400).send(error);
     const { idUser, msg } = req.body;
     

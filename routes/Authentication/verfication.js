@@ -1,7 +1,7 @@
 const verficationRoute = require("express").Router();
 const verficationController = require("../../controllers/verficationController");
 
-verficationRoute.route("/")
+verficationRoute.route("/:token")
       .get(verficationController.getVerfaid)
 
 

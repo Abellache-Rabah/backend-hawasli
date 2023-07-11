@@ -62,8 +62,11 @@ module.exports.photo= async (req, res) => {
 };
 
 module.exports.deletePhoto = async (req, res) => {
-  const name = req.body.name;
+  const name = req.body?.name;
   const email = req?.email;
+  if (!name) {
+    res.status(400).send("Please enter a photo name")
+  }
   try {
     const workers = await WorkerModel.findOne({ email });
     if (!workers) {
