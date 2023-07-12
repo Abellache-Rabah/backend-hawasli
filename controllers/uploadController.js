@@ -18,10 +18,11 @@ module.exports.profile= async (req, res) => {
       resource_type: "auto",
       folder: `${user._id}`,
       width: 300,
-      crop: "scale",
+      height: 300,
+      crop: 'fill'
     });
     var resultPictureUrl  = result.secure_url;
-    var squarePicture = "w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/";
+    var squarePicture = "c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/";
     var position = 50;
     //insert square picture parameter to the url
     var output = [resultPictureUrl.slice(0, position), squarePicture, resultPictureUrl.slice(position)].join('');
