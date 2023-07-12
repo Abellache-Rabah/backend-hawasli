@@ -20,11 +20,17 @@ module.exports.profile= async (req, res) => {
       width: 300,
       crop: "scale",
     });
-    user.picture = result.secure_url;
+    var resultPictureUrl  = result.secure_url;
+    var squarePicture = "w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/";
+    var position = 50;
+    //insert square picture parameter to the url
+    var output = [resultPictureUrl.slice(0, position), squarePicture, resultPictureUrl.slice(position)].join('');
+
+    user.picture = output;
     await user.save();
     res.json({
       message: "uploaded seccesfully",
-      url: result.secure_url,
+      url: output,
     });
   } catch (err) {
     console.log("Error", err);

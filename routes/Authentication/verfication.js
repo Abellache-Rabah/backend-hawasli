@@ -6,4 +6,4 @@ verficationRoute.route("/:token")
 
 
 
-module.exports = {verficationRoute};
+module.exports = verficationRoute;

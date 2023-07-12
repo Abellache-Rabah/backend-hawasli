@@ -8,7 +8,7 @@ const {
   loginSchema,
   ConsummerSchema,
   WorkerSchema,
-} = require("../../utils/validation/joi");
+} = require("../utils/validation/joi");
 
 const createAccessToken = (email) => {
   return jwt.sign({ email }, process.env.K);
